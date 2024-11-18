@@ -1,5 +1,36 @@
 ﻿@{
     ViewData["Title"] = "CargaArchivo";
 }
-<h1>@ViewData["Title"]</h1>
 
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header text-center">
+            <h5 class="card-title">Subir Archivo</h5>
+        </div>
+        <div class="card-body text-center">
+            <button class="btn btn-outline-success" type="button" data-bs-toggle="modal" data-bs-target="#fileModal">
+                <i class="bi bi-file-earmark-spreadsheet"></i> Subir Archivo
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="fileModal" tabindex="-1" aria-labelledby="fileModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="fileModalLabel">Carga demsiado grande</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="CargarArchivo" enctype="multipart/form-data">
+                    <div class="form-group m-3">
+                        <label for="imageFile" class="control-label">Seleccione un archivo de Excel, que desee cargar</label>
+                        <input type="file" name="file" class="form-control" accept=".xlsx" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Subir</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

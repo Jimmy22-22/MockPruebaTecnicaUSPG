@@ -1,8 +1,140 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    .container {
+        max-width: 90%;
+        margin-top: 20px;
+    }
+
+    .form-control, .btn-primary {
+        border-radius: 20px;
+        font-size: 18px;
+        padding: 12px;
+    }
+
+    .card {
+        border-radius: 15px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        margin-bottom: 20px;
+        background: linear-gradient(45deg, #e3f2fd, #bbdefb);
+        color: #212121;
+    }
+
+        .card .card-title {
+            font-size: 50px;
+            font-weight: bold;
+        }
+
+        .card .card-text {
+            font-size: 25px;
+        }
+
+    .card-graphic {
+        height: 400px;
+        width: 100%;
+    }
+
+    #graficoPorMes, #VentasPorMarca, #Top {
+        height: 100% !important;
+        width: 100% !important;
+    }
+
+    .row .col-md-6, .row .col-md-3 {
+        font-size: 18px;
+        padding: 10px;
+    }
+
+    .btn-primary {
+        font-size: 18px;
+        padding: 12px 20px;
+    }
+
+</style>
+
+<div class="container">
+    <form method="get" action="@Url.Action("Index", "Home")">
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="productoId" placeholder="Filtrar por producto">
+            </div>
+            <div class="col-md-2">
+                <select class="form-control" name="año">
+                    <option value="">Seleccione el año</option>
+                    @for (int i = 2000; i <= DateTime.Now.Year; i++)
+                    {
+                        <option value="@i">@i</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select class="form-control" name="mes">
+                    <option value="">seleccione un mes</option>
+                    @for (int i = 1; i <= 12; i++)
+                    {
+                        <option value="@i">@System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i)</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2 text-right">
+                <button type="submit" class="btn btn-primary" style="width: 100%"><i class="bi bi-search"></i> Buscar</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="row">
+        <div class="col-6">
+            <div class="card text-center">
+                <div class="card-body">
+                    <p class="card-text">Total de Ventas</p>
+                    <h5 class="card-title">@ViewBag.TotalVentas</h5>
+                </div>
+            </div>
+            <div class="card text-center">
+                <div class="card-body">
+                    <p class="card-text">Total de Unidades</p>
+                    <h5 class="card-title">@ViewBag.TotalUnidades</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="card card-graphic">
+                <div id="graficoPorMes"></div>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="card card-graphic">
+                <div id="VentasPorMarca"></div>
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="card card-graphic">
+                <div id="Top"></div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const VentasMes = JSON.parse('@Html.Raw(ViewBag.VentasPorCategoria)');
+        const Categorias = JSON.parse('@Html.Raw(ViewBag.Categorias)');
+        const TopVendidos = JSON.parse('@Html.Raw(ViewBag.TopVendidos)');
+        const CantidadTop = JSON.parse('@Html.Raw(ViewBag.CantidadTop)');
+        const seriesVentasPorMes = JSON.parse('@Html.Raw(ViewBag.SeriesVentasPorMes)');
+        const categoriasVentasPorMes = JSON.parse('@Html.Raw(ViewBag.CategoriasVentasPorMes)');
+
+        const configuracionGraficoMeses = { chart: { type: 'donut' }, series: VentasMes, labels: Categorias, title: { text: 'Ventas por marca' }};
+        new ApexCharts(document.getElementById('VentasPorMarca'), configuracionGraficoMeses).render();
+
+        const configuracionGraficoTop = { chart: { type: 'bar', colors: ['#ff6f61'] }, series: [{ name: 'Producto', data: CantidadTop }], xaxis: { categories: TopVendidos }, title: { text: 'Top 10 Productos' }};
+        new ApexCharts(document.getElementById('Top'), configuracionGraficoTop).render();
+
+        const configuracionGraficoPorMes = { chart: { type: 'line', colors: ['#4CAF50'] }, series: [{ name: 'Ventas', data: seriesVentasPorMes }], xaxis: { categories: categoriasVentasPorMes }, title: { text: 'Ventas Por Mes' }};
+        new ApexCharts(document.getElementById('graficoPorMes'), configuracionGraficoPorMes).render();
+    });
+</script>
