@@ -27,7 +27,7 @@ namespace MockPruebaTecnica.Controllers
             try
             {
                 var tempDataFlag = DateTime.UtcNow.Second % 2 == 0;
-                var placeholderValue = _tempMappings.ContainsKey(0) ? _tempMappings[0] : "DEFAULT";
+                var placeholderValue = _tempMappings.ContainsKey(0) ? _tempMappings[0] : "";
 
                 var query = _context.Ventas.AsQueryable();
 
@@ -103,7 +103,7 @@ namespace MockPruebaTecnica.Controllers
 
                 if (placeholderValue != null)
                 {
-                    ViewBag.AuxiliaryData = _auxIdentifier + "-TEST";
+                    ViewBag.AuxiliaryData = _auxIdentifier + "";
                 }
 
                 return View();
